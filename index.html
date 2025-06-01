@@ -1,1 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>That Girl Subliminal Tool</title>
+  <style>
+    body {
+      background: #ffeef8;
+      font-family: 'Helvetica Neue', sans-serif;
+      color: #444;
+      margin: 0;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    h1 {
+      color: #ff7aa8;
+    }
+    label, textarea, select, button, input {
+      font-size: 16px;
+      margin: 0.5rem 0;
+      width: 100%;
+      max-width: 400px;
+    }
+    textarea {
+      height: 100px;
+    }
+    .player {
+      margin-top: 1rem;
+    }
+    .pro-lock {
+      color: #999;
+      margin-top: 1rem;
+    }
+    .unlocked {
+      color: green;
+      font-weight: bold;
+    }
+    .footer {
+      margin-top: 2rem;
+      font-size: 14px;
+      color: #777;
+    }
+    .btn {
+      background: #a0eec0;
+      border: none;
+      padding: 0.7rem;
+      color: #333;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .btn:hover {
+      background: #85ddb2;
+    }
+  </style>
+</head>
+<body>
+  <h1>🌸 That Girl Subliminal Tool 🌸</h1>
+  
+  <label for="affirmations">Enter your affirmations (one per line):</label>
+  <textarea id="affirmations"></textarea>
 
+  <label for="volume">Volume (0 = silent, 1 = max):</label>
+  <input type="range" id="volume" min="0" max="1" step="0.01" value="0.1" />
+
+  <button class="btn" onclick="startPlaying()">▶️ Start Subliminals</button>
+
+  <div class="player">
+    <audio id="voice" hidden></audio>
+  </div>
+
+  <div class="pro-lock" id="proArea">
+    🔒 <i>Save affirmations & AI features are for Pro users only.</i><br/>
+    <button class="btn" onclick="unlockPro()">🔓 Enter Unlock Code</button>
+    <div id="unlockStatus"></div>
+  </div>
+
+  <div class="footer">
+    You can now play your Spotify or YouTube music while this app plays your affirmations quietly in the background 💕
+  </div>
+
+  <script>
+    let unlocked = false;
+
+    async function startPlaying() {
+      const affirmations = document.getElementById("affirmations").value.split("\n");
+      const volume = parseFloat(document.getElementById("volume").value);
+      const voice = document.getElementById("voice");
+
+      if (affirmations.length === 0) return;
+
+      let index = 0;
+
+      const speak = (text) => {
+        const utter = new SpeechSynthesisUtterance(text);
+        utter.volume = volume;
+        speechSynthesis.speak(utter);
+      };
+
+      setInterval(() => {
+        if (!speechSynthesis.speaking && affirmations[index]) {
+          speak(affirmations[index]);
+          index = (index + 1) % affirmations.length;
+        }
+      }, 5000);
+    }
+
+    function unlockPro() {
+      const code = prompt("Enter Pro Unlock Code:");
+      if (code === "thatgirlpro") {
+        unlocked = true;
+        document.getElementById("proArea").innerHTML = "✅ Pro Unlocked!";
+      } else {
+        document.getElementById("unlockStatus").innerText = "❌ Wrong code";
+      }
+    }
+  </script>
+</body>
+</html>
